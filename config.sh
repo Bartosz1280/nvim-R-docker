@@ -28,8 +28,14 @@ apt-get install dialog
 apt-get install libterm-readline-gnu-perl
 # R extrnal dependencies
 # Needed for R libraries to work
-apt install cmake -y
-apt install python3 -y
+apt-get install cmake -y
+apt-get install python3 -y
+apt-get install libcurl4-openssl-dev -y 
+apt-get install libxml2-dev -y
+apt-get install  libfontconfig1-dev -y
+apt-get install  libssl-dev -y
+apt-get install libharfbuzz-dev libfribidi-dev -y
+apt-get install libtiff5-dev -y
 # 2. R INSTALLATION
 #
 # NOTE: Default R installation on Linux gives 3.8 version
