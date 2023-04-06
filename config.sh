@@ -3,12 +3,13 @@
 # Bolean values for switching-off installation
 # of particular components, for debugging purpouses.
 
-Rinstall=true		#R 4.2 installlation
-Nviminstall=true	#Nvim 0.8 installation
-initconfig=true	#Nvim plugins configuration
-Rlibs=true		#Installation of R libraries
-mininstall=true #Do not install plugins other than R related
-customopt=false # Assign custom options at the nvim start
+Rinstall=true		# R 4.2 installlation
+Nviminstall=true	# Nvim 0.8 installation
+initconfig=true		# Nvim plugins configuration
+Rlibs=true		# Installation of R libraries
+mininstall=true 	# Do not install plugins other than R related
+customopt=false 	# Assign custom options at the nvim start
+runnvimR=true 		# Runs nvim-R after after the configuration
 
 # 1. APT UPDATEs
 #
@@ -34,8 +35,8 @@ apt-get install cmake -y
 apt-get install python3 -y
 apt-get install libcurl4-openssl-dev -y 
 apt-get install libxml2-dev -y
-apt-get install  libfontconfig1-dev -y
-apt-get install  libssl-dev -y
+apt-get install libfontconfig1-dev -y
+apt-get install libssl-dev -y
 apt-get install libharfbuzz-dev libfribidi-dev -y
 apt-get install libtiff5-dev -y
 # 2. R INSTALLATION
@@ -100,6 +101,7 @@ if [ $initconfig = true ]; then
     echo "let g:R_path = '/usr/bin/R'" >> ~/.config/nvim/init.vim
     echo "let g:R_assign = 1" >> ~/.config/nvim/init.vim
     echo "let R_auto_omni = 0" >> ~/.config/nvim/init.vim
+    echo "let R_auto_start = 1" >>  ~/.config/nvim/init.vim
     echo "  " >> ~/.config/nvim/init.vim
     
     # Lines below adds call plug, and all commands to
@@ -111,14 +113,8 @@ if [ $initconfig = true ]; then
     # mininstall=false - no additional plugins are instlalled
     # with nvim, except for the one related to R
     if [ $mininstall = false ]; then
-		echo "Plug 'https://github.com/junegunn/vim-github-dashboard.git'"  >> ~/.config/nvim/init.vim
-	echo "Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'" >> ~/.config/nvim/init.vim
-	echo "Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' }" >> ~/.config/nvim/init.vim
-	echo "Plug 'tpope/vim-fireplace', { 'for': 'clojure' }" >> ~/.config/nvim/init.vim
-	echo "Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }" >> ~/.config/nvim/init.vim
-	echo "Plug 'fatih/vim-go', { 'tag': '*' }" >> ~/.config/nvim/init.vim
-	echo "Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }" >> ~/.config/nvim/init.vim
-	echo "Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }" >> ~/.config/nvim/init.vim
+        echo "Plug 'preservim/nerdtree'" >> ~/.config/nvim/init.vim
+        echo "Plug 'Townk/vim-autoclose'" >> ~/.config/nvim/init.vim
     fi
 
     #R RELATED PLUGS:
@@ -137,7 +133,6 @@ if [ $initconfig = true ]; then
 	echo ':set relativenumber' >> ~/.config/nvim/init.vim
 	echo ':set clipboard+=unnamedplus "Yanking between windows' >> ~/.config/nvim/init.vimv
 	echo ':set shiftwidth=4 "Intendentation' >> ~/.config/nvim/init.vim
-	echo "PLUG INSTALL >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
     fi
     # $Rlibs - installs R packages
     #
@@ -147,11 +142,24 @@ if [ $initconfig = true ]; then
     #
     if [ $Rlibs = true ]; then
 	touch libinstall.R
-	echo "install.packages('tidyverse')" >> libinstall.R
+	echo "install.packages(c('tidyverse','data.table','utils'))" >> libinstall.R
 	Rscript libinstall.R
 	rm libinstall.R
     fi
-
     nvim +PlugInstall +qall
-    nvim test
+fi
+
+# Downloads offical documentation for Nvim-R
+#
+# Documentation is in .txt format. To initate NvimR files has to
+# in .R format. First file is downloaded, then # is added to
+# comment-out all the content. Next file is renamed to be in .R format.
+#
+#
+wget https://raw.githubusercontent.com/jalvesaq/Nvim-R/master/doc/Nvim-R.txt
+sed -i 's/^/#/' Nvim-R.txt
+mv Nvim-R.txt Nvim-R.R
+
+if [ $runnvimR = true ]; then
+    nvim Nvim-R.R
 fi
