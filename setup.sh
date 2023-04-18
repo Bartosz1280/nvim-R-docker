@@ -9,7 +9,7 @@ initconfig=true		# Nvim plugins configuration
 Rlibs=true		# Installation of R libraries
 mininstall=true 	# Do not install plugins other than R related
 customopt=true	 	# Assign custom options at the nvim start
-runnvimR=true 		# Runs nvim-R after after the configuration
+runnvimR=false 		# Runs nvim-R after after the configuration
 
 # 1. APT UPDATEs
 #
